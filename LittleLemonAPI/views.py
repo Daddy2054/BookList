@@ -23,6 +23,11 @@ from .serializers import MenuItemSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
 
+#Throttling
+from rest_framework.throttling import AnonRateThrottle
+from rest_framework.throttling import UserRateThrottle
+from rest_framework.decorators import throttle_classes
+from .throttles import TenCallsPerMinute
 
 class CategoriesView(generics.ListCreateAPIView):
     queryset = Category.objects.all()
@@ -158,3 +163,15 @@ def manager_view(request):
         return Response({"message": "Only Manager should see this"})
     else:
         return Response({"message": "You are not a Manager"}, 403)
+
+@api_view()
+@throttle_classes([AnonRateThrottle])
+def throttle_check(request):
+    return Response({"message": "successful"})
+
+
+@api_view()
+@permission_classes([IsAuthenticated])
+@throttle_classes([TenCallsPerMinute])
+def throttle_check_auth(request):
+    return Response({"message": "message for the logged in users only"})
