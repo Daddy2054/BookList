@@ -14,29 +14,37 @@ from rest_framework_yaml.renderers import YAMLRenderer
 from django.core.paginator import Paginator, EmptyPage
 
 # More on filtering and pagination.step1
-from rest_framework.response import Response 
-from rest_framework import viewsets 
-from .models import MenuItem 
-from .serializers import MenuItemSerializer  
+from rest_framework.response import Response
+from rest_framework import viewsets
+from .models import MenuItem
+from .serializers import MenuItemSerializer
+
+#Authentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import permission_classes
 
 class CategoriesView(generics.ListCreateAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
+
 class MenuItemsView(generics.ListCreateAPIView):
     queryset = MenuItem.objects.all()
     serializer_class = MenuItemSerializer
-    ordering_fields=['price','inventory']
-    filteset_fields=['price','inventory']
-    search_fields=['title','category__title']
+    ordering_fields = ["price", "inventory"]
+    filteset_fields = ["price", "inventory"]
+    search_fields = ["title", "category__title"]
     # search_fields=['category']
+
 
 class MenuItemsViewSet(viewsets.ModelViewSet):
     queryset = MenuItem.objects.all()
     serializer_class = MenuItemSerializer
-    ordering_fields=['price','inventory']
+    ordering_fields = ["price", "inventory"]
     # search_fields=['title']
-    search_fields=['title','category__title']
+    search_fields = ["title", "category__title"]
+
+
 # Create your views here.
 # class MenuItemsView(generics.ListCreateAPIView):
 #     queryset = MenuItem.objects.all()
@@ -134,3 +142,9 @@ def menu(request):
 def welcome(request):
     data = "<html><body><h1>Welcome To Little Lemon API Project</h1></body></html>"
     return Response(data)
+
+
+@api_view()
+@permission_classes([IsAuthenticated])
+def secret(request):
+    return Response({"message": "Some secret message"})
