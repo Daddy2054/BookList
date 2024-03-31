@@ -13,6 +13,17 @@ from rest_framework_yaml.renderers import YAMLRenderer
 # Pagination
 from django.core.paginator import Paginator, EmptyPage
 
+# More on filtering and pagination.step1
+from rest_framework.response import Response 
+from rest_framework import viewsets 
+from .models import MenuItem 
+from .serializers import MenuItemSerializer  
+class MenuItemsViewSet(viewsets.ModelViewSet):
+    queryset = MenuItem.objects.all()
+    serializer_class = MenuItemSerializer
+    ordering_fields=['price','inventory']
+    # search_fields=['title']
+    search_fields=['title','category__title']
 # Create your views here.
 # class MenuItemsView(generics.ListCreateAPIView):
 #     queryset = MenuItem.objects.all()
@@ -66,7 +77,7 @@ def menu_items(request):
             items = paginator.page(number=page)
         except EmptyPage:
             items = []
-            
+
         serialized_item = MenuItemSerializer(
             items,
             many=True,
