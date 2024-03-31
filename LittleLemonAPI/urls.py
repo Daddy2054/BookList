@@ -4,8 +4,12 @@ from . import views
 # path("menu-items", views.MenuItemsView.as_view()),
 # path("menu-items/<int:pk>", views.SingleMenuItemView.as_view()),
 urlpatterns = [
+    #w3.filtering lab
+    path('category', views.CategoriesView.as_view()),
+    path('menu-items/', views.MenuItemsView.as_view()),
+
     # More on filtering and pagination.step2
-    path('menu-items',views.MenuItemsViewSet.as_view({'get':'list'})),
+    # path('menu-items',views.MenuItemsViewSet.as_view({'get':'list'})),
     path('menu-items/<int:pk>',views.MenuItemsViewSet.as_view({'get':'retrieve'})),
 
     # path("menu-items/", views.menu_items),
