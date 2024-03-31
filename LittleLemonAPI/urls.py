@@ -22,4 +22,5 @@ urlpatterns = [
 #Authentication
     path('secret/',views.secret,name='secret'),
     path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
+    path('manager-view/', views.manager_view, name='manager_view'),
 ]

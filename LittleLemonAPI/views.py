@@ -19,9 +19,10 @@ from rest_framework import viewsets
 from .models import MenuItem
 from .serializers import MenuItemSerializer
 
-#Authentication
+# Authentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
+
 
 class CategoriesView(generics.ListCreateAPIView):
     queryset = Category.objects.all()
@@ -148,3 +149,12 @@ def welcome(request):
 @permission_classes([IsAuthenticated])
 def secret(request):
     return Response({"message": "Some secret message"})
+
+
+@api_view()
+@permission_classes([IsAuthenticated])
+def manager_view(request):
+    if request.user.groups.filter(name="Manager").exists():
+        return Response({"message": "Only Manager should see this"})
+    else:
+        return Response({"message": "You are not a Manager"}, 403)
