@@ -10,6 +10,9 @@ from rest_framework.decorators import api_view, renderer_classes
 from rest_framework_csv.renderers import CSVRenderer
 from rest_framework_yaml.renderers import YAMLRenderer
 
+# Pagination
+from django.core.paginator import Paginator, EmptyPage
+
 # Create your views here.
 # class MenuItemsView(generics.ListCreateAPIView):
 #     queryset = MenuItem.objects.all()
@@ -37,10 +40,15 @@ def category_detail(request, pk):
 def menu_items(request):
     if request.method == "GET":
         items = MenuItem.objects.select_related("category").all()
-        category_name=request.query_params.get('category')
-        to_price = request.query_params.get('to_price')
-        search = request.query_params.get('search')
-        ordering=request.query_params.get('ordering')
+        category_name = request.query_params.get("category")
+        to_price = request.query_params.get("to_price")
+        search = request.query_params.get("search")
+        ordering = request.query_params.get("ordering")
+
+        # Pagination
+        perpage = request.query_params.get("perpage", default=2)
+        page = request.query_params.get("page", default=1)
+
         if search:
             items = items.filter(title__icontains=search)
 
@@ -49,9 +57,16 @@ def menu_items(request):
         if to_price:
             items = items.filter(price__lte=to_price)
         if ordering:
-            ordering_fields=ordering.split(',')
+            ordering_fields = ordering.split(",")
             items = items.order_by(*ordering_fields)
-        
+
+        # Pagination object inializing
+        paginator = Paginator(items, per_page=perpage)
+        try:
+            items = paginator.page(number=page)
+        except EmptyPage:
+            items = []
+            
         serialized_item = MenuItemSerializer(
             items,
             many=True,
@@ -89,8 +104,9 @@ def menu(request):
         template_name="menu_items.html",
     )
 
-@api_view(['GET'])
+
+@api_view(["GET"])
 @renderer_classes([StaticHTMLRenderer])
 def welcome(request):
-    data = '<html><body><h1>Welcome To Little Lemon API Project</h1></body></html>'
+    data = "<html><body><h1>Welcome To Little Lemon API Project</h1></body></html>"
     return Response(data)
