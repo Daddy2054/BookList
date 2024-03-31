@@ -23,4 +23,9 @@ urlpatterns = [
     # Throttling
     path("throttle-check", views.throttle_check, name="throttle-check"),
     path("throttle-check-auth", views.throttle_check_auth, name="throttle-check-auth"),
+
+    # API throttling for class-based views
+    path('menu2-items',views.MenuItemsViewSet.as_view({'get':'list'})),
+    path("menu2-items/<int:pk>", views.MenuItemsViewSet.as_view({"get": "retrieve"})),
+
 ]

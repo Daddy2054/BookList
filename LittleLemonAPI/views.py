@@ -44,12 +44,19 @@ class MenuItemsView(generics.ListCreateAPIView):
 
 
 class MenuItemsViewSet(viewsets.ModelViewSet):
+  #  throttle_classes = [AnonRateThrottle, UserRateThrottle]
     queryset = MenuItem.objects.all()
     serializer_class = MenuItemSerializer
     ordering_fields = ["price", "inventory"]
     # search_fields=['title']
     search_fields = ["title", "category__title"]
 
+    def get_throttles(self):
+        if self.action == 'create':
+            throttle_classes = [UserRateThrottle]
+        else:
+            throttle_classes = []
+        return [throttle() for throttle in throttle_classes]
 
 # Create your views here.
 # class MenuItemsView(generics.ListCreateAPIView):

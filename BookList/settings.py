@@ -154,7 +154,7 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.TokenAuthentication",
     ),
     "DEFAULT_THROTTLE_RATES": {
-        "anon": "20/day",
+        "anon": "2/min",
         "user": "5/minute",
         "ten": "10/minute",
     },
