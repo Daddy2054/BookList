@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "BookListAPI",
     "LittleLemonAPI",
     "LittleLemonDRF",
+    "djoser",
 ]
 
 MIDDLEWARE = [
@@ -152,10 +153,15 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 3,
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.TokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
     ),
     "DEFAULT_THROTTLE_RATES": {
         "anon": "2/min",
         "user": "5/minute",
         "ten": "10/minute",
     },
+}
+
+DJOSER = {
+    "USER_ID_FIELD": "username",
 }

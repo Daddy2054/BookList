@@ -8,4 +8,8 @@ urlpatterns = [
     # path('api/', include('BookListAPI.urls')),
     # path('api/' ,include('LittleLemonDRF.urls')),
     path("__debug__/", include("debug_toolbar.urls")),
+
+    #Djoser
+    path('auth/', include('djoser.urls')),
+    path('auth/', include('djoser.urls.authtoken')),
 ]
