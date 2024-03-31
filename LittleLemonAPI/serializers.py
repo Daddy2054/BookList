@@ -4,6 +4,7 @@ from .models import MenuItem
 from .models import Category
 from rest_framework.validators import UniqueValidator
 from rest_framework.validators import UniqueTogetherValidator
+import bleach
 
 # # to hide some fields from json
 # class MenuItemSerializer(serializers.Serializer):
@@ -58,7 +59,18 @@ class MenuItemSerializer(serializers.ModelSerializer):
     # title = serializers.CharField(
     #     max_length=255, validators=[UniqueValidator(queryset=MenuItem.objects.all())]
     # )
+    #To sanitize the title field v1
+    # def validate_title(self, value):
+    #     return bleach.clean(value)
 
+    #To sanitize the title field v2
+    def validate(self, attrs):
+        attrs['title'] = bleach.clean(attrs['title'])
+        if(attrs['price']<2):
+            raise serializers.ValidationError('Price should not be less than 2.0')
+        if(attrs['inventory']<0):
+            raise serializers.ValidationError('Stock cannot be negative')
+        return super().validate(attrs)
     class Meta:
         model = MenuItem
         depth = 1
